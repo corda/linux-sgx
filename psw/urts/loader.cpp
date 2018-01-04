@@ -870,7 +870,7 @@ int CLoader::set_context_protection(layout_t *layout_start, layout_t *layout_end
             }
             else
             {
-                prot = SI_FLAGS_RW & SI_MASK_MEM_ATTRIBUTE;
+                prot = SI_FLAGS_RWX & SI_MASK_MEM_ATTRIBUTE;
 #ifndef SE_SIM
 
                 //when a page is eremoved when loading, we should set this page to none access. 

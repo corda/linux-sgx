@@ -65,6 +65,7 @@ typedef enum _para_type_t
     HEAPMAXSIZE,
     HEAPMINSIZE,
     HEAPINITSIZE,
+    HEAPEXECUTABLE,
     MISCSELECT,
     MISCMASK
 } para_type_t;
@@ -117,5 +118,6 @@ private:
     uint64_t m_rva;
     uint32_t m_gd_size;
     uint8_t *m_gd_template;
+    bool m_heap_executable;
 };
 #endif

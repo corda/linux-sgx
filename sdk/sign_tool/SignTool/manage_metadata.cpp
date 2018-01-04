@@ -178,6 +178,7 @@ bool parse_metadata_file(const char *xmlpath, xml_parameter_t *parameter, int pa
 CMetadata::CMetadata(metadata_t *metadata, BinParser *parser)
     : m_metadata(metadata)
     , m_parser(parser), m_rva(0), m_gd_size(0), m_gd_template(NULL)
+    , m_heap_executable(false)
 {
     memset(m_metadata, 0, sizeof(metadata_t));
     memset(&m_create_param, 0, sizeof(m_create_param));
@@ -414,6 +415,7 @@ bool CMetadata::check_xml_parameter(const xml_parameter_t *parameter)
 
     se_trace(SE_TRACE_ERROR, "tcs_num %d, tcs_max_num %d, tcs_min_pool %d\n", m_create_param.tcs_num, m_create_param.tcs_max_num, m_create_param.tcs_min_pool);
 
+    m_heap_executable = parameter[HEAPEXECUTABLE].value;
     return true;
 }
 
@@ -518,7 +520,7 @@ bool CMetadata::build_layout_table()
     layout.entry.id = LAYOUT_ID_HEAP_MIN;
     layout.entry.page_count = (uint32_t)(m_create_param.heap_min_size >> SE_PAGE_SHIFT);
     layout.entry.attributes = PAGE_ATTR_EADD;
-    layout.entry.si_flags = SI_FLAGS_RW;
+    layout.entry.si_flags = m_heap_executable ? SI_FLAGS_RWX : SI_FLAGS_RW;
     m_layouts.push_back(layout);
 
     if(m_create_param.heap_init_size > m_create_param.heap_min_size)
@@ -526,7 +528,7 @@ bool CMetadata::build_layout_table()
         layout.entry.id = LAYOUT_ID_HEAP_INIT;
         layout.entry.page_count = (uint32_t)((m_create_param.heap_init_size - m_create_param.heap_min_size) >> SE_PAGE_SHIFT);
         layout.entry.attributes = PAGE_ATTR_EADD | PAGE_ATTR_POST_REMOVE | PAGE_ATTR_POST_ADD;
-        layout.entry.si_flags = SI_FLAGS_RW;
+        layout.entry.si_flags = m_heap_executable ? SI_FLAGS_RWX : SI_FLAGS_RW;
         m_layouts.push_back(layout);
     }
 
@@ -535,7 +537,7 @@ bool CMetadata::build_layout_table()
         layout.entry.id = LAYOUT_ID_HEAP_MAX;
         layout.entry.page_count = (uint32_t)((m_create_param.heap_max_size - m_create_param.heap_init_size) >> SE_PAGE_SHIFT);
         layout.entry.attributes = PAGE_ATTR_POST_ADD;
-        layout.entry.si_flags = SI_FLAGS_RW;
+        layout.entry.si_flags = m_heap_executable ? SI_FLAGS_RWX : SI_FLAGS_RW;
         m_layouts.push_back(layout);
     }
 

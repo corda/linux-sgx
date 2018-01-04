@@ -999,6 +999,7 @@ int main(int argc, char* argv[])
                                    {"HeapMaxSize",0x1FFFFFFFFF,0,HEAP_SIZE_MAX,0},
                                    {"HeapMinSize",0x1FFFFFFFFF,0,HEAP_SIZE_MIN,0},
                                    {"HeapInitSize",0x1FFFFFFFFF,0,HEAP_SIZE_MIN,0},
+                                   {"HeapExecutable",1,0,0,0},
                                    {"MiscSelect", 0xFFFFFFFF, 0, DEFAULT_MISC_SELECT, 0},
                                    {"MiscMask", 0xFFFFFFFF, 0, DEFAULT_MISC_MASK, 0}};
 
